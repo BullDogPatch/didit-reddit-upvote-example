@@ -19,7 +19,10 @@ export async function generateMetadata({ params }) {
 
 export default async function SinglePostPage({ params }) {
   const postId = params.postId;
+
   const posts = await getPost(postId);
+  console.log(posts);
+
   const post = posts[0];
 
   const { rows: votes } = await db.query(

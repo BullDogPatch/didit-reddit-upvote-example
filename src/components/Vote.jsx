@@ -1,11 +1,11 @@
-import { db } from "@/db";
-import auth from "../app/middleware";
-import { revalidatePath } from "next/cache";
-import { VoteButtons } from "./VoteButtons";
+import { db } from '@/db';
+import auth from '../app/middleware';
+import { revalidatePath } from 'next/cache';
+import { VoteButtons } from './VoteButtons';
 
 async function getExistingVote(userId, postId) {
   const { rows: existingVotes } = await db.query(
-    "SELECT * FROM votes WHERE user_id = $1 AND post_id = $2 LIMIT 1",
+    'SELECT * FROM votes WHERE user_id = $1 AND post_id = $2 LIMIT 1',
     [userId, postId]
   );
 
@@ -15,7 +15,7 @@ async function getExistingVote(userId, postId) {
 async function handleVote(userId, postId, newVote) {
   // Check if the user has already voted on this post
   if (!userId) {
-    throw new Error("Cannot vote without being logged in");
+    console.log('you must be logged in to vote');
   }
 
   const existingVote = await getExistingVote(userId, postId);
@@ -23,10 +23,10 @@ async function handleVote(userId, postId, newVote) {
   if (existingVote) {
     if (existingVote.vote === newVote) {
       // User is toggling their vote, so remove it
-      await db.query("DELETE FROM votes WHERE id = $1", [existingVote.id]);
+      await db.query('DELETE FROM votes WHERE id = $1', [existingVote.id]);
     } else {
       // Update the existing vote
-      await db.query("UPDATE votes SET vote = $1 WHERE id = $2", [
+      await db.query('UPDATE votes SET vote = $1 WHERE id = $2', [
         newVote,
         existingVote.id,
       ]);
@@ -45,26 +45,28 @@ async function handleVote(userId, postId, newVote) {
 
 export async function Vote({ postId, votes }) {
   const session = await auth();
+  const userId = session?.user?.id;
   const existingVote = await getExistingVote(session?.user?.id, postId);
 
   async function upvote() {
-    "use server";
+    'use server';
     await handleVote(session?.user?.id, postId, 1);
   }
 
   async function downvote() {
-    "use server";
+    'use server';
     await handleVote(session?.user?.id, postId, -1);
   }
 
   return (
     <>
-      <form className="flex items-center space-x-3 pl-3">
+      <form className='flex items-center space-x-3 pl-3'>
         <VoteButtons
           upvote={upvote}
           downvote={downvote}
           votes={votes}
           existingVote={existingVote}
+          userId={userId}
         />
         {/* <button formAction={upvote}>
           {existingVote?.vote === 1 ? (
