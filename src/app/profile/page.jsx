@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import { LoginButton } from '@/components/LoginButton';
 import { getUser } from '@/utils/api';
+import Link from 'next/link';
 
 export async function generateMetadata() {
   const session = await auth();
@@ -31,6 +32,9 @@ const ProfilePage = async () => {
 
   return (
     <div className='h-[80vh] flex flex-col justify-center items-center'>
+      <Link href={`/`} className='text-blue-500 hover:underline mb-4 block'>
+        ← Back
+      </Link>
       <p className='text-2xl font-bold'>{user.name}</p>
       <img
         src={user.image}
