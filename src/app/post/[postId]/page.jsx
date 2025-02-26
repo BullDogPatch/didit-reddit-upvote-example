@@ -4,12 +4,22 @@ import { Vote } from '@/components/Vote';
 import { db } from '@/db';
 import { getPost } from '@/utils/api';
 
+export async function generateMetadata({ params }) {
+  const postId = params.postId;
+  const posts = await getPost(postId);
+  const post = posts[0];
+
+  if (!post) return { title: 'Post Not Found' };
+
+  return {
+    title: `${post.title}`,
+    description: `Viewing ${post.title} page`,
+  };
+}
+
 export default async function SinglePostPage({ params }) {
   const postId = params.postId;
-
   const posts = await getPost(postId);
-  console.log(posts);
-
   const post = posts[0];
 
   const { rows: votes } = await db.query(
