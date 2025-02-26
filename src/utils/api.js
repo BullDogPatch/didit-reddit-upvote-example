@@ -15,3 +15,9 @@ export const getPost = async (postId) => {
 
   return posts;
 };
+
+export const getUser = async (userId) => {
+  const user = await db.query(`SELECT * FROM users WHERE id = $1`, [userId]);
+  console.log(user.rows[0]);
+  return user.rows[0];
+};
