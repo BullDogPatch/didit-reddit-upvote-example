@@ -75,6 +75,6 @@ CREATE TABLE votes (
     post_id INT NULL REFERENCES posts(id),
     vote SMALLINT CHECK (vote IN (-1, 1)),
     vote_type VARCHAR(255) CHECK (vote_type IN ('post', 'comment')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, post_id, vote_type)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    -- UNIQUE(user_id, post_id, vote_type)
 );
