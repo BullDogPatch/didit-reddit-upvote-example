@@ -15,7 +15,7 @@ async function getExistingVote(userId, postId) {
 async function handleVote(userId, postId, newVote) {
   // Check if the user has already voted on this post
   if (!userId) {
-    console.log('you must be logged in to vote');
+    throw new Error('Cannot vote without being logged in');
   }
 
   const existingVote = await getExistingVote(userId, postId);
@@ -39,7 +39,7 @@ async function handleVote(userId, postId, newVote) {
     );
   }
 
-  revalidatePath('/');
+  // revalidatePath("/");
   revalidatePath(`/post/${postId}`);
 }
 
